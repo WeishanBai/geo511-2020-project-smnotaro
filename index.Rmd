@@ -116,41 +116,10 @@ kable(race_eth_summarize) %>%
 ```
 
 Mapping Median Household Income Estimate in the Past 12 Months in Erie Niagara and Cattaraugus Counties
-```{r mapincome, eval=T, echo=T, warning=F, message=F, cache=F}
-income_pal <- colorBin(palette = "Greens", bins = 6, domain = tract_income$estimate)
 
-income_map <- tract_income %>%
-  st_transform("+proj=longlat +datum=WGS84") %>%
-  leaflet() %>%
-  setView(lng = -78.878738, lat = 42.880230, zoom = 7) %>%
-  setMaxBounds(lng1 = -78.878738, lat1 = 45.027500, lng2 = -78.878738, lat2 = 40.440624) %>%
-  addProviderTiles("Esri") %>% 
-  addPolygons(weight = 2, fillOpacity = 0.8, color = ~ income_pal(estimate), 
-              label = ~paste0("Estimate Household Income: ", dollar(estimate))) %>%
-  addLegend(position = "topright", pal = income_pal , values = ~estimate,
-            title = "Median Household Income", opacity = 0.7,
-            labFormat = labelFormat(prefix = "$"))
-income_map
-```
 
 Mapping Estimate Total Black Population in Erie Niagara and Cattaraugus Counties
-```{r maprace, eval=T, echo=T, cache=F}
-race_pal <- colorBin(palette = "YlGnBu", bins = 5, domain = tract_race$estimate)
-
-race_map <- tract_race %>%
-  st_transform("+proj=longlat +datum=WGS84") %>%
-  leaflet() %>%
-  setView(lng = -78.878738, lat = 42.880230, zoom = 7) %>%
-  setMaxBounds(lng1 = -78.878738, lat1 = 45.027500, lng2 = -78.878738, lat2 = 40.440624) %>%
-  addProviderTiles("Esri") %>% 
-  addPolygons(weight = 2, fillOpacity = 0.8, color = ~ race_pal(estimate), 
-              label = ~paste0("Estimate Population: ", estimate)) %>%
-  addLegend(position = "topright", pal = race_pal , values = ~estimate,
-            title = "Black Population", opacity = 0.7)
-race_map
-```
-
-```{r demographic, eval=F, echo=T, cache=F}
+```{r demographic, eval=T, echo=T, cache=F}
 income_pal <- colorBin(palette = "Greens", bins = 6, domain = st_tract_income$estimate)
 race_pal <- colorBin(palette = "YlGnBu", bins = 5, domain = st_tract_race$estimate)
 
@@ -201,12 +170,6 @@ dec_map <- leaflet() %>%
                    group = "Remediated Sites") %>%
   addLayersControl(overlayGroups = c("Hazardous Sites", "Remediated Sites"))
 dec_map
-```
-
-```{r, echo = F}
-#data %>% 
-  #ggplot(aes(x=x,y=y,col=category))+
-  #geom_point()
 ```
 
 # Conclusions
