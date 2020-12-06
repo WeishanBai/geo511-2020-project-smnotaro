@@ -60,7 +60,7 @@ race_eth_acs <- get_acs(geography = "tract", state = "NY",
 #head(race_eth_acs)
 ```
 
-## Gathering and Tidying the DEC Data. 
+## Gathering and Tidying the DEC Data
 The New York State Department of Environmental Conservation (2020) has a free database of remediation site records that is updated daily. They provide various ways to access this data, so I chose to read in this data as a CSV file since it was my most efficient method. I also learned how to filter two types of rows within one column from Nishida (2016).
 
 When filtering for 02 and A, this was to find the active remediation sites. Sites classified as 02 means the disposal of hazardous waste represents a significant threat to the environment or to health, or hazardous waste disposal has not been confirmed, but the site has been listed on the Federal National Priorities List. Sites classified as A means the site is active. Sites classified as 01 is another classification for sites that have contamination that constitutes a significant threat to public health and the environment, and the significant threat to public health and the environment is causing or presents an imminent danger of causing, irreversible or irreparable damage to the environment. Currently, this dataset does not include this classification code.
