@@ -27,10 +27,9 @@ library(RColorBrewer)
 library(scales)
 library(kableExtra)
 library(dplyr)
-library(htmltools)
 ```
 
-## Accessing Census Data
+## Accessing ACS Data
 The `tidycensus` package (Walker and Herman n.d., n.d., Walker et al. 2020) allows users to easily gather decennial United States Census data and American Community Survey (ACS) data as well as the United States Census Bureau's geographic boundary files. Gathering Cesus data can be difficult, so this package is an easy-to-use tool to quickly gather data. I have chosen to worth with the ACS 5-year eastimates since this is best used with data at the census tract level or smaller (United States Census Bureau 2020). Since I will be looking at the census tract level for demographic data, the ACS 5-year estimates data was the best option. A lot of the code I used to sort through this data was due to the DataCamp course on the `tidycensus` package (Walker et al. n.d.).
 ```{r acs, eval=T, echo=T, results='hide', message=F, cache = F}
 loadacs5 <- load_variables(2018, "acs5", cache = TRUE)
@@ -81,19 +80,6 @@ remediated_sites_sf <- st_as_sf(remediated_sites,
 ```
 
 
-Preparing the Map
-```{r mapprep, eval=T, echo=F, results='hide', cache = F}
-ny_tracts <- tracts(state = "NY", county = c("Erie", "Niagara", "Cattaraugus"), cb = TRUE) %>%
-  st_transform("+proj=longlat +datum=WGS84")
-ny_water <- area_water(state = "NY", county = c("Erie", "Niagara", "Cattaraugus")) %>%
-  st_transform("+proj=longlat +datum=WGS84")
-ny_roads <- primary_secondary_roads(state = "NY", year = 2018) %>%
-  st_transform("+proj=longlat +datum=WGS84")
-options(tigris_class = "sf")
-options(tigris_use_cache = TRUE)
-```
-
-
 ```{r, echo = F, results='asis'}
 #data %>% 
   #slice(1:10) %>% #show only 1:n rows
@@ -131,13 +117,15 @@ race_pal <- colorBin(palette = "RdPu", bins = 9, pretty = FALSE,
 
 demographics_map <- leaflet() %>%
   setView(lng = -78.878738, lat = 42.880230, zoom = 7) %>%
-  setMaxBounds(lng1 = -78.878738, lat1 = 45.027500, lng2 = -78.878738, lat2 = 40.440624) %>%
+  setMaxBounds(lng1 = -71.254028, lat1 = 46.829853, lng2 = -84.512016, lat2 = 39.103119) %>%
   addProviderTiles("Esri") %>% 
   addPolygons(data = st_tract_income, 
-              weight = 2, 
+              weight = 2,
               fillOpacity = 0.8, 
               color = ~ income_pal(estimate), 
-              label = ~paste0("Estimate Household Income: ", dollar(estimate)), 
+              label = ~paste0("Estimate Household Income: ", dollar(estimate)),
+              highlight = highlightOptions(weight = 2, 
+                                           color = "black", bringToFront = TRUE),
               group = "Income") %>%
   addLegend(position = "bottomleft", 
             pal = income_pal , 
@@ -145,10 +133,13 @@ demographics_map <- leaflet() %>%
             title = "Median Household Income", opacity = 0.7,
             labFormat = labelFormat(prefix = "$")) %>%
   addPolygons(data = st_tract_race, 
-              weight = 2, 
+              weight = 2,
               fillOpacity = 0.9, 
               color = ~ race_pal(estimate), 
-              label = ~paste0("Estimate Population: ", estimate), group = "Race") %>%
+              label = ~paste0("Estimate Population: ", estimate),
+              highlight = highlightOptions(weight = 2, 
+                                           color = "black", bringToFront = TRUE),
+              group = "Race") %>%
   addLegend(position = "bottomright", 
             pal = race_pal , 
             values = st_tract_race$estimate,
@@ -165,7 +156,7 @@ I have mapped the DEC sites that are in the process of being remediated on one l
 ```{r decmaps, eval=T, echo=T, cache=F}
 dec_map <- leaflet() %>%
   setView(lng = -78.878738, lat = 42.880230, zoom = 7) %>%
-  setMaxBounds(lng1 = -78.878738, lat1 = 45.027500, lng2 = -78.878738, lat2 = 40.440624) %>%
+  setMaxBounds(lng1 = -71.254028, lat1 = 46.829853, lng2 = -84.512016, lat2 = 39.103119) %>%
   addProviderTiles("Esri") %>%
   addCircleMarkers(data = hazardous_sites_sf, radius = 1.25, color = "red", 
                    popup = ~paste0("<b>", "Site Name: ", Program.Facility.Name, "</b>", 
@@ -183,6 +174,7 @@ dec_map
 
 # Conclusions
 I can conclude that low-income and black communities live closest to sites that are in the process of or have been remediated. This is a prime example of environmental injustice occurring in Western New York. In the future, it would be useful to map Asian, Hispanic, and Indigenous populations to observe the possible environmental injustices they face. Will evidence of environmental injustice be as clear as what black communities face? Also, mapping other environmental hazards, such as proximity to major intersections, lead paint exposure, and particulate matter 2.5 exposure, will allow for future analysis of the extent marginalized communities face of environmental hazards. With the completion of this script, the next course of action is to create the steps for students to follow in their environmental injustice mapping lab.
+
 
 # References
 GitHub. (n.d.). addLegend and NA work but only with a workaround · Issue #485. https://github.com/rstudio/leaflet/issues/485.
