@@ -79,15 +79,6 @@ remediated_sites_sf <- st_as_sf(remediated_sites,
                                 dim = "XY")
 ```
 
-
-```{r, echo = F, results='asis'}
-#data %>% 
-  #slice(1:10) %>% #show only 1:n rows
-  #kable(digits=2,align="c")%>% #make table and round to two digits
-  #kable_styling(bootstrap_options = 
-                  #c("striped", "hover", "condensed", "responsive")) #apply other formatting
-```
-
 # Results
 
 ## Finding the Number of Tracts Where a Race or Ethnicity is the Majority for that Tract
@@ -178,14 +169,25 @@ I can conclude that low-income and black communities live closest to sites that 
 
 # References
 GitHub. (n.d.). addLegend and NA work but only with a workaround · Issue #485. https://github.com/rstudio/leaflet/issues/485.
+
 Holtz, Y. (n.d.). R Color Brewer’s palettes. https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html.
+
 Majerus, R. (n.d.). Interactive Maps with leaflet in R. https://learn.datacamp.com/courses/interactive-maps-with-leaflet-in-r.
+
 New York State Department of Environmental Conservation. 2020. Environmental Remediation Sites. https://data.ny.gov/Energy-Environment/Environmental-Remediation-Sites/c6ci-rzpg.
+
 Nishida, K. 2016, March 11. Filtering Data with dplyr. https://blog.exploratory.io/filter-data-with-dplyr-76cf5f1a258e.
+
 RStudio GitHub. (n.d.). Leaflet for R - Legends. https://rstudio.github.io/leaflet/legends.html.
+
 Silge, J. 2017, June 24. Using tidycensus and leaflet to map Census data. https://juliasilge.com/blog/using-tidycensus/.
+
 United States Census Bureau. 2020, September 10. When to Use 1-year, 3-year, or 5-year Estimates. https://www.census.gov/programs-surveys/acs/guidance/estimates.html.
+
 Walker, K., and M. Herman. (n.d.). Basic usage of tidycensus. https://walker-data.com/tidycensus/articles/basic-usage.html.
+
 Walker, K., and M. Herman. (n.d.). Spatial data in tidycensus. https://walker-data.com/tidycensus/articles/spatial-data.html.
+
 Walker, K., M. Herman, and K. Eberwein. 2020, September 28. Package “tidycensus.”
+
 Walker, K., C. Ismay, and R. Robins. (n.d.). Analyzing US Census Data in R. https://learn.datacamp.com/courses/analyzing-us-census-data-in-r.
