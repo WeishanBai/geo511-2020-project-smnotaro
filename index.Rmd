@@ -2,6 +2,9 @@
 title: "Environmental Justice Mapping"
 author: Sandra Notaro
 subtitle: Mapping Income and Race with Department of Environmental Conservation Sites in Erie, Niagara, and Cattaraugus Counties
+output: 
+  html_document:
+    code_folding: hide
 ---
 
 # Introduction
@@ -66,13 +69,21 @@ When filtering for 02 and A, this was to find the active remediation sites. Site
 When filtering for 04, 05, and C, this was a way to find sites that have been remediated (but may not be up to environmentally safe standards). Sites classified as 04 means the site has been properly closed but still requires continued site management consisting of operation, maintenance and/or monitoring. These sites have not been brought into compliance with standards, criteria, or guidance. 05 means that the site has been properly closed and requires no continued managment. Sites classified as C means that the remediation has been satisfactorily completed.
 ```{r gather_dec, eval=T, echo=T, message=F, results='hide', cache = F}
 DEC_data <- read.csv("https://data.ny.gov/api/views/c6ci-rzpg/rows.csv?accessType=DOWNLOAD&bom=true&format=true&sorting=true")
-#View(dec_data)
+#View(DEC_data)
 
-hazardous_sites <- DEC_data %>%
+DEC_data_unique <- DEC_data %>%
+  distinct(Program.Type, Program.Facility.Name, Site.Class, Address1, Locality, County, 
+           ZIPCode, SWIS.Code, DEC.Region, Latitude, Longitude, Georeference, 
+           .keep_all = TRUE)
+#View(DEC_data_unique)
+
+hazardous_sites <- DEC_data_unique %>%
   filter(Site.Class %in% c("02", "A") & County %in% c("Erie", "Niagara", "Cattaraugus"))
-hazardous_sites_sf <- st_as_sf(hazardous_sites, coords = c("Longitude", "Latitude"), dim = "XY")
+hazardous_sites_sf <- st_as_sf(hazardous_sites, 
+                               coords = c("Longitude", "Latitude"), 
+                               dim = "XY")
 
-remediated_sites <- DEC_data %>%
+remediated_sites <- DEC_data_unique %>%
   filter(Site.Class %in% c("04", "05", "C") & County %in% c("Erie", "Niagara", "Cattaraugus"))
 remediated_sites_sf <- st_as_sf(remediated_sites, 
                                 coords = c("Longitude", "Latitude"), 
