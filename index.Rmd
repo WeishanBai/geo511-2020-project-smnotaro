@@ -16,7 +16,7 @@ Learning how to map is a useful skill and understanding how to map in RStudio is
 
 Low-income and race are key indicators to observe when analyzing environmental justice. In the context of Western New York, I want the students to analyze how marginalized communities been impacted unequally compared to higher-income and white neighborhoods. Exploration and comparison of environmental injustice will help students understand the core inequality issues in Western New York. Therefore, I hypothesize that the lower-income and black neighborhoods will live closer to sites that have been or are in the process of being remediated. Despite the fact that some sites will be remediated already, this is still an indicator that the site was once contaminated, so it historically shows contamination marginalized communities have lived near.
 
-# Materials and methods
+# Materials and Methods
 
 ## Packages
 ```{r packages, eval=T, echo=T, message=F, results='hide', cache = F}
@@ -65,8 +65,20 @@ race_eth_acs <- get_acs(geography = "tract", state = "NY",
 ## Gathering and Tidying the DEC Data
 The New York State Department of Environmental Conservation (2020) has a free database of remediation site records that is updated daily. They provide various ways to access this data, so I chose to read in this data as a CSV file since it was my most efficient method. I also learned how to filter two types of rows within one column from Nishida (2016).
 
-When filtering for 02 and A, this was to find the active remediation sites. Sites classified as 02 means the disposal of hazardous waste represents a significant threat to the environment or to health, or hazardous waste disposal has not been confirmed, but the site has been listed on the Federal National Priorities List. Sites classified as A means the site is active. Sites classified as 01 is another classification for sites that have contamination that constitutes a significant threat to public health and the environment, and the significant threat to public health and the environment is causing or presents an imminent danger of causing, irreversible or irreparable damage to the environment. Currently, this dataset does not include this classification code.
-When filtering for 04, 05, and C, this was a way to find sites that have been remediated (but may not be up to environmentally safe standards). Sites classified as 04 means the site has been properly closed but still requires continued site management consisting of operation, maintenance and/or monitoring. These sites have not been brought into compliance with standards, criteria, or guidance. 05 means that the site has been properly closed and requires no continued managment. Sites classified as C means that the remediation has been satisfactorily completed.
+### Site Classifications That I have Filtered For
+* Numbered sites are listed on the "Registry of Inactive Hazardous Waste Disposal Sites" (called "Registry" sites).
+* Lettered sites are Non-Registry sites that are/have been investigated and remediated through a brownfield program or other environmental remediation program.
+
+#### Active Remediation (Hazardous) Sites
+* 02: disposal of hazardous waste represents a significant threat to the environment or to health, or hazardous waste disposal has not been confirmed, but the site has been listed on the Federal National Priorities List.
+* A: the site is actively being remediated and the remedial program is not yet complete.
+
+#### Remediated Sites
+* 04: the site has been properly closed but still requires continued site management consisting of operation, maintenance and/or monitoring.
+* 05: the site has been properly closed and requires no continued managment.
+* C: remediation has been satisfactorily completed.
+
+(Department of Environmental Conservation n.d.)
 ```{r gather_dec, eval=T, echo=T, message=F, results='hide', cache = F}
 DEC_data <- read.csv("https://data.ny.gov/api/views/c6ci-rzpg/rows.csv?accessType=DOWNLOAD&bom=true&format=true&sorting=true")
 #View(DEC_data)
@@ -179,6 +191,8 @@ I can conclude that low-income and black communities live closest to sites that 
 
 
 # References
+Department of Environmental Conservation. (n.d.). Site Classifications. https://www.dec.ny.gov/chemical/8663.html.
+
 GitHub. (n.d.). addLegend and NA work but only with a workaround · Issue #485. https://github.com/rstudio/leaflet/issues/485.
 
 Holtz, Y. (n.d.). R Color Brewer’s palettes. https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html.
