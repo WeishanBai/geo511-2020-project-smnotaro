@@ -132,7 +132,7 @@ race_pal <- colorBin(palette = "RdPu", bins = 9, pretty = FALSE,
 demographics_map <- leaflet() %>%
   setView(lng = -78.878738, lat = 42.880230, zoom = 7) %>%
   setMaxBounds(lng1 = -71.254028, lat1 = 46.829853, lng2 = -84.512016, lat2 = 39.103119) %>%
-  addProviderTiles("Esri") %>% 
+  addProviderTiles("Esri", options = providerTileOptions(minZoom = 5)) %>% 
   addPolygons(data = st_tract_income, 
               weight = 2,
               fillOpacity = 0.8, 
@@ -171,13 +171,19 @@ I have mapped the DEC sites that are in the process of being remediated on one l
 dec_map <- leaflet() %>%
   setView(lng = -78.878738, lat = 42.880230, zoom = 7) %>%
   setMaxBounds(lng1 = -71.254028, lat1 = 46.829853, lng2 = -84.512016, lat2 = 39.103119) %>%
-  addProviderTiles("Esri") %>%
-  addCircleMarkers(data = hazardous_sites_sf, radius = 1.25, color = "red", 
+  addProviderTiles("Esri", options = providerTileOptions(minZoom = 5)) %>%
+  addCircleMarkers(data = hazardous_sites_sf, 
+                   radius = 1.3, 
+                   color = "red", 
+                   opacity = .7,
                    popup = ~paste0("<b>", "Site Name: ", Program.Facility.Name, "</b>", 
                          "<br/>", "Address: ", Address1,
                          "<br/>", "Site Class: ", Site.Class),
                    group = "Hazardous Sites") %>%
-  addCircleMarkers(data = remediated_sites_sf, radius = 1.25, color = "purple",
+  addCircleMarkers(data = remediated_sites_sf, 
+                   radius = 1.3, 
+                   color = "purple", 
+                   opacity = .7,
                    popup = ~paste0("<b>", "Site Name: ", Program.Facility.Name, "</b>", 
                          "<br/>", "Address: ", Address1,
                          "<br/>", "Site Class: ", Site.Class),
