@@ -62,14 +62,13 @@ The New York State Department of Environmental Conservation (2020) has a free da
 * Numbered sites are listed on the "Registry of Inactive Hazardous Waste Disposal Sites" (called "Registry" sites).
 * Lettered sites are Non-Registry sites that are/have been investigated and remediated through a brownfield program or another environmental remediation program.
 
-#### Active Remediation (Hazardous) Sites
-* 02: disposal of hazardous waste represents a significant threat to the environment or to health, or hazardous waste disposal has not been confirmed, but the site has been listed on the Federal National Priorities List.
-* A: the site is actively being remediated and the remedial program is not yet complete.
-
-#### Remediated Sites
-* 04: the site has been properly closed but still requires continued site management consisting of operation, maintenance and/or monitoring.
-* 05: the site has been properly closed and requires no continued management.
-* C: remediation has been satisfactorily completed.
+|Site Class | Description
+|-----------|----------------------------------------------------
+|02         |Disposal of hazardous waste represents a significant threat to the environment or to health, or hazardous waste disposal has not been confirmed, but the site has been listed on the Federal National Priorities List.
+|04         |The site has been properly closed but still requires continued site management consisting of operation, maintenance and/or monitoring.
+|05         |The site has been properly closed and requires no continued management.
+|A          |The site is actively being remediated and the remedial program is not yet complete.
+|C          |Remediation has been satisfactorily completed.
 
 (Department of Environmental Conservation n.d.)
 ```{r gather_dec, eval=T, echo=T, message=F, results='hide', cache = F}
@@ -209,7 +208,11 @@ dec_map
 ```
 
 # Conclusions
-I can conclude that low-income and black communities live closest to sites that are in the process of or have been remediated. This is a prime example of environmental injustice occurring in Western New York. In the future, it would be useful to map Asian, Hispanic, and Indigenous populations to observe the possible environmental injustices they face. Will evidence of environmental injustice be as clear as what black communities face? Also, mapping other environmental hazards, such as proximity to major intersections, lead paint exposure, and particulate matter 2.5 exposure, will allow for future analysis of the extent marginalized communities face of environmental hazards. With the completion of this script, the next course of action is to create the steps for students to follow in their environmental injustice mapping lab.
+I can conclude that low-income and black communities live closest to sites that are in the process of or have been remediated. The clustering of DEC sites in census tracts with the lowest income and higher black populations displays a prime example of environmental injustice occurring in Western New York.
+
+In the future, it would be useful to map Asian, Hispanic, and Indigenous populations to observe the possible environmental injustices they face. Will evidence of environmental injustice be as clear as what black communities face? Also, mapping other environmental hazards, such as proximity to major intersections, lead paint exposure, and particulate matter 2.5 exposure, will allow for future analysis of the extent of environmental hazards that marginalized communities face. With the completion of this script, the next course of action is to create steps for college students to follow in their environmental injustice mapping lab.
+
+Overall, introducing college students to environmental justice issues and interactive mapping will hopefully inspire at least one student to want to fight environmental justice in one way or another, such as through interactive maps.
 
 
 # References
