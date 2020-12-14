@@ -10,11 +10,11 @@ output:
 # Introduction
 Environmental justice mapping can be easily done with the EPA's free EJSCREEN tool (https://ejscreen.epa.gov/mapper/). This mapping tool provides a great introduction to analyzing and comparing environmental justice issues. However, this mapping tool would not suffice for a three hour upperclassman college lab. 
 
-In addition, the Department of Environmental Conservation (DEC) provides a free interactive map called the DECinfo Locator (https://gisservices.dec.ny.gov/gis/dil/). This map allows users to toggle between different layers to view DEC documents to learn about the environmental quality across New York State. One layer available shows Remediation Sites under the Environmental Cleanup tab, which shows the location of DEC sites all across New York and access to information about these sites.
+In addition, the Department of Environmental Conservation (DEC) provides a free interactive map called the DECinfo Locator (https://gisservices.dec.ny.gov/gis/dil/). One layer of this map allows users view DEC sites across New York State. This allows easy viewing of DEC site locations as well as information about these sites.
 
-Learning how to map is a useful skill and understanding how to map in RStudio is also very beneficial. The overall goal is to develop a step-by-step lab for students to create environmental justice maps in RStudio that are similar to EJSCREEN and the DECinfo Locator. The end product of these maps will thus be presented in this project.
+Learning how to map is a useful skill. Introducing students how to map in RStudio is also especially beneficial. The overall goal is to develop a step-by-step lab for students to create environmental justice maps in RStudio that are similar to EJSCREEN and the DECinfo Locator. The end product of these maps will thus be presented in this project.
 
-Low-income and race are key indicators to observe when analyzing environmental justice. In the context of Western New York, I want the students to analyze how marginalized communities been impacted unequally compared to higher-income and white neighborhoods. Exploration and comparison of environmental injustice will help students understand the core inequality issues in Western New York. Therefore, I hypothesize that the lower-income and black neighborhoods will live closer to sites that have been or are in the process of being remediated. Despite the fact that some sites will be remediated already, this is still an indicator that the site was once contaminated, so it historically shows contamination marginalized communities have lived near.
+Low-income and race are key indicators to observe when analyzing environmental injustice. In the context of Western New York, I want the students to analyze how marginalized communities have been impacted unequally compared to higher-income and white neighborhoods. Exploration and comparison of environmental injustice will help students understand the core inequality issues in Western New York. Therefore, I hypothesize that the lower-income and black neighborhoods will live closer to sites that have been or are in the process of being remediated. Despite the fact that some sites will be remediated already, this is still an indicator that the site was once contaminated, so it historically shows contamination that marginalized communities have lived near.
 
 # Materials and Methods
 
@@ -30,10 +30,11 @@ library(RColorBrewer)
 library(scales)
 library(kableExtra)
 library(dplyr)
+library(DT)
 ```
 
 ## Accessing ACS Data
-The `tidycensus` package (Walker and Herman n.d., n.d., Walker et al. 2020) allows users to easily gather decennial United States Census data and American Community Survey (ACS) data as well as the United States Census Bureau's geographic boundary files. Gathering Cesus data can be difficult, so this package is an easy-to-use tool to quickly gather data. I have chosen to worth with the ACS 5-year eastimates since this is best used with data at the census tract level or smaller (United States Census Bureau 2020). Since I will be looking at the census tract level for demographic data, the ACS 5-year estimates data was the best option. A lot of the code I used to sort through this data was due to the DataCamp course on the `tidycensus` package (Walker et al. n.d.).
+The `tidycensus` package (Walker and Herman n.d., n.d., Walker et al. 2020) allows users to easily gather decennial United States Census data and American Community Survey (ACS) data as well as the United States Census Bureau's geographic boundary files. Gathering Census data can be difficult, so this package is an easy-to-use tool to quickly gather data. I have chosen to work with the ACS 5-year estimates since this is best used with data at the census tract level or smaller (United States Census Bureau 2020). Since I will be looking at the census tract level for demographic data, the ACS 5-year estimates data was the best option. A lot of the code I used to sort through this data was what I learned from the DataCamp course on the `tidycensus` package (Walker et al. n.d.).
 ```{r acs, eval=T, echo=T, results='hide', message=F, cache = F}
 loadacs5 <- load_variables(2018, "acs5", cache = TRUE)
 #api_key <- census_api_key("type_your_API_key_here")
@@ -52,22 +53,14 @@ tract_race <- get_acs(geography = "tract", variables = "B02001_003", state = "NY
 #head(tract_race)
 st_tract_race <- tract_race %>%
   st_transform("+proj=longlat +datum=WGS84") #transforming coordinates of tract_race to a new projection
-
-race_eth <- c(White = "B03002_003", Black = "B03002_004", Indigenous = "B03002_005",
-          Asian = "B03002_006", Hispanic = 	"B03002_012")
-race_eth_acs <- get_acs(geography = "tract", state = "NY",
-                      county = c("Erie", "Niagara", "Cattaraugus"), variables = race_eth,
-                      summary_var = "B03002_001",
-                      year = 2018, geometry = TRUE)
-#head(race_eth_acs)
 ```
 
 ## Gathering and Tidying the DEC Data
-The New York State Department of Environmental Conservation (2020) has a free database of remediation site records that is updated daily. They provide various ways to access this data, so I chose to read in this data as a CSV file since it was my most efficient method. I also learned how to filter two types of rows within one column from Nishida (2016).
+The New York State Department of Environmental Conservation (2020) has a free database of remediation site records that is updated daily. To sort through my data, I had to filter two types of rows within one column (Nishida 2016). Lastly, there was duplicated data in this database, so I used directions from Datanovia (n.d.).
 
-### Site Classifications That I have Filtered For
+### Site Classifications That I Have Filtered For
 * Numbered sites are listed on the "Registry of Inactive Hazardous Waste Disposal Sites" (called "Registry" sites).
-* Lettered sites are Non-Registry sites that are/have been investigated and remediated through a brownfield program or other environmental remediation program.
+* Lettered sites are Non-Registry sites that are/have been investigated and remediated through a brownfield program or another environmental remediation program.
 
 #### Active Remediation (Hazardous) Sites
 * 02: disposal of hazardous waste represents a significant threat to the environment or to health, or hazardous waste disposal has not been confirmed, but the site has been listed on the Federal National Priorities List.
@@ -75,7 +68,7 @@ The New York State Department of Environmental Conservation (2020) has a free da
 
 #### Remediated Sites
 * 04: the site has been properly closed but still requires continued site management consisting of operation, maintenance and/or monitoring.
-* 05: the site has been properly closed and requires no continued managment.
+* 05: the site has been properly closed and requires no continued management.
 * C: remediation has been satisfactorily completed.
 
 (Department of Environmental Conservation n.d.)
@@ -105,8 +98,16 @@ remediated_sites_sf <- st_as_sf(remediated_sites,
 # Results
 
 ## Finding the Number of Tracts Where a Race or Ethnicity is the Majority for that Tract
-I was inspired by the `tidycensus` course from Walker et al. (n.d.) to create a table that showed the number of tracts that a certain race or ethnicity is the majority for that tract. I created this table from UPDATE HERE
-```{r tally, message=F, warning=F, cache=F}
+I was inspired by the `tidycensus` course from Walker et al. (n.d.) to create a table that showed the number of tracts that a certain race or ethnicity is the majority for that tract. I created this table from Hao (2020).
+```{r tally_race_eth, message=F, warning=F, cache=F}
+race_eth <- c(White = "B03002_003", Black = "B03002_004", Indigenous = "B03002_005",
+          Asian = "B03002_006", Hispanic = 	"B03002_012")
+race_eth_acs <- get_acs(geography = "tract", state = "NY",
+                      county = c("Erie", "Niagara", "Cattaraugus"), variables = race_eth,
+                      summary_var = "B03002_001",
+                      year = 2018, geometry = TRUE)
+#head(race_eth_acs)
+
 race_eth_lgst <- race_eth_acs %>%
   group_by(GEOID) %>%
   filter(estimate == max(estimate)) %>%
@@ -122,6 +123,21 @@ kable(race_eth_summarize) %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 ```
 
+## Creating an Interactive Table
+As opposed to a static table, the students can explore this interactive table to observe the DEC sites in Western New York in a clean format through the `DT` package (RStudio GitHub n.d.).
+```{r tally_dec_sites, message=F, warning=F, cache=F}
+wny_sites <- DEC_data_unique %>%
+  filter(Site.Class %in% c("02", "04", "05", "A", "C") & 
+           County %in% c("Erie", "Niagara", "Cattaraugus")) %>%
+  select(Program.Number, Program.Type, Program.Facility.Name, Site.Class, Address1,
+         Locality, County, ZIPCode)
+#View(wny_sites)
+
+datatable(wny_sites, options = list(), class = "cell-border stripe", 
+          colnames = c("Program Number", "Program Type", "Facility Name", "Site Class",
+                       "Address", "City/Town/Village", "County", "Zip Code"), 
+          rownames = FALSE)
+```
 ## Mapping Demographic Data
 I chose to map the median household income estimate in the past 12 months on one layer and the total black population estimate on another layer for Erie, Niagara, and Cattaraugus Counties. The median household income data provided the best visual representation of the income inequalities throughout Western New York. Also, I chose to map only the black population simply due to time constraints. I learned how to create these maps from DataCamp's course on the `leaflet` package (Majerus n.d.), and from other sources (GitHub n.d., Holtz n.d., RStudio GitHub n.d., Silge 2017).
 ```{r demographic, eval=T, echo=T, cache=F}
@@ -165,8 +181,8 @@ demographics_map <- leaflet() %>%
 demographics_map
 ```
 
-## Maping DEC Sites
-I have mapped the DEC sites that are in the process of being remediated on one layer and the DEC sites that have been remediated (but may still be monitored) on another layer for for Erie, Niagara, and Cattaraugus Counties. I used the knowledge I gained from the demographic maps I made to create this map. I also learned how to use line breaks in my legend from the DataCamp course on `leaflet` (Majerus n.d.).
+## Mapping DEC Sites
+I have mapped the DEC sites that are in the process of being remediated on one layer and the DEC sites that have been remediated (but may still be monitored) on another layer for Erie, Niagara, and Cattaraugus Counties. I used the knowledge I gained from the demographic maps I made to create this map. I also learned how to use line breaks in my legend from the DataCamp course on `leaflet` (Majerus n.d.).
 ```{r decmaps, eval=T, echo=T, cache=F}
 dec_map <- leaflet() %>%
   setView(lng = -78.878738, lat = 42.880230, zoom = 7) %>%
@@ -197,9 +213,13 @@ I can conclude that low-income and black communities live closest to sites that 
 
 
 # References
+Datanovia. (n.d.). Identify and Remove Duplicate Data in R. https://www.datanovia.com/en/lessons/identify-and-remove-duplicate-data-in-r/.
+
 Department of Environmental Conservation. (n.d.). Site Classifications. https://www.dec.ny.gov/chemical/8663.html.
 
 GitHub. (n.d.). addLegend and NA work but only with a workaround · Issue #485. https://github.com/rstudio/leaflet/issues/485.
+
+Hao, Z. 2020, October 22. Create Awesome HTML Table with knitr::kable and kableExtra. https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html.
 
 Holtz, Y. (n.d.). R Color Brewer’s palettes. https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html.
 
@@ -210,6 +230,8 @@ New York State Department of Environmental Conservation. 2020. Environmental Rem
 Nishida, K. 2016, March 11. Filtering Data with dplyr. https://blog.exploratory.io/filter-data-with-dplyr-76cf5f1a258e.
 
 RStudio GitHub. (n.d.). Leaflet for R - Legends. https://rstudio.github.io/leaflet/legends.html.
+
+RStudio GitHub. (n.d.). DT: An R interface to the DataTables library. https://rstudio.github.io/DT/.
 
 Silge, J. 2017, June 24. Using tidycensus and leaflet to map Census data. https://juliasilge.com/blog/using-tidycensus/.
 
