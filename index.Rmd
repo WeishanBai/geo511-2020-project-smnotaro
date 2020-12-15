@@ -2,9 +2,6 @@
 title: "Environmental Justice Mapping"
 author: Sandra Notaro
 subtitle: Mapping Income and Race with Department of Environmental Conservation Sites in Erie, Niagara, and Cattaraugus Counties
-output: 
-  html_document:
-    code_folding: hide
 ---
 
 # Introduction
@@ -12,7 +9,7 @@ Environmental justice mapping can be easily done with the EPA's free EJSCREEN to
 
 In addition, the Department of Environmental Conservation (DEC) provides a free interactive map called the DECinfo Locator (https://gisservices.dec.ny.gov/gis/dil/). One layer of this map allows users view DEC sites across New York State. This allows easy viewing of DEC site locations as well as information about these sites.
 
-Learning how to map is a useful skill. Introducing students how to map in RStudio is also especially beneficial. The overall goal is to develop a step-by-step lab for students to create environmental justice maps in RStudio that are similar to EJSCREEN and the DECinfo Locator. The end product of these maps will thus be presented in this project.
+Learning how to map is a useful skill. Introducing students how to map in RStudio is also especially beneficial. The overall goal is to develop a step-by-step lab for students to create environmental justice maps in RStudio that are similar to EJSCREEN and the DECinfo Locator. In addition, teaching students how to create static and interactive tables will allow students to learn various ways to create tables in RStudio. The end product of these maps and tables will thus be presented in this project.
 
 Low-income and race are key indicators to observe when analyzing environmental injustice. In the context of Western New York, I want the students to analyze how marginalized communities have been impacted unequally compared to higher-income and white neighborhoods. Exploration and comparison of environmental injustice will help students understand the core inequality issues in Western New York. Therefore, I hypothesize that the lower-income and black neighborhoods will live closer to sites that have been or are in the process of being remediated. Despite the fact that some sites will be remediated already, this is still an indicator that the site was once contaminated, so it historically shows contamination that marginalized communities have lived near.
 
@@ -137,6 +134,7 @@ datatable(wny_sites, options = list(), class = "cell-border stripe",
                        "Address", "City/Town/Village", "County", "Zip Code"), 
           rownames = FALSE)
 ```
+
 ## Mapping Demographic Data
 I chose to map the median household income estimate in the past 12 months on one layer and the total black population estimate on another layer for Erie, Niagara, and Cattaraugus Counties. The median household income data provided the best visual representation of the income inequalities throughout Western New York. Also, I chose to map only the black population simply due to time constraints. I learned how to create these maps from DataCamp's course on the `leaflet` package (Majerus n.d.), and from other sources (GitHub n.d., Holtz n.d., RStudio GitHub n.d., Silge 2017).
 ```{r demographic, eval=T, echo=T, cache=F}
@@ -208,12 +206,11 @@ dec_map
 ```
 
 # Conclusions
-I can conclude that low-income and black communities live closest to sites that are in the process of or have been remediated. The clustering of DEC sites in census tracts with the lowest income and higher black populations displays a prime example of environmental injustice occurring in Western New York.
+I can conclude that low-income and black communities live closest to sites that are in the process of or have been remediated. The clustering of DEC sites in census tracts with the lowest income and higher black populations displays a prime example of environmental injustice occurring in Western New York. I can also conclude that 42 tracts in Erie, Niagara, and Cattaraugus Counties have black as the majority race. Lastly, using the `DT` package is an efficient way to allow students to create interactive tables to explore DEC sites.
 
 In the future, it would be useful to map Asian, Hispanic, and Indigenous populations to observe the possible environmental injustices they face. Will evidence of environmental injustice be as clear as what black communities face? Also, mapping other environmental hazards, such as proximity to major intersections, lead paint exposure, and particulate matter 2.5 exposure, will allow for future analysis of the extent of environmental hazards that marginalized communities face. With the completion of this script, the next course of action is to create steps for college students to follow in their environmental injustice mapping lab.
 
 Overall, introducing college students to environmental justice issues and interactive mapping will hopefully inspire at least one student to want to fight environmental justice in one way or another, such as through interactive maps.
-
 
 # References
 Datanovia. (n.d.). Identify and Remove Duplicate Data in R. https://www.datanovia.com/en/lessons/identify-and-remove-duplicate-data-in-r/.
